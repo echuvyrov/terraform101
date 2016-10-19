@@ -28,10 +28,26 @@ With Service Principal information in hand, let's use Terraform to create perhap
 In your text editor of choice (Visual Code/Sublime/Vim/etc), create a file called terraform_azure101.tf. The exact name of the file is not important, since terraform accepts the folder name as a parameter - all scripts in the folder get executed. Paste the following code in that new file:
 
 ~~~~
-This is a 
-piece of code 
-in a block
-~~~~
+# Configure the Microsoft Azure Provider
+provider "azurerm" {
+  subscription_id = "your_subscription_id_from_script_execution"
+  client_id       = "your_client_id_from_script_execution"
+  client_secret   = "your_client_secret_from_script_execution"
+  tenant_id       = "your_tenant_id_from_script_execution"
+}
 
+# create a resource group 
+resource "azurerm_resource_group" "helloterraform" {
+    name = "terraformtest"
+    location = "West US"
+}
+~~~~
+In the "provider" section of the script, you tell Terraform to use an Azure provider to provision resources in the script. Refer to the results of Service Principal script execution above for values for subscription_id, client_id, client_secret and tenant_id. The "azure_rm_resource_group" resource instructs Terraform to create a new resource group; you will see more resource types available in Terraform below.
 
 ###Executing the Script
+With the script saved, exit to the console/command line and type
+
+```
+terraform.exe plan terraformscripts
+```
+In the above, we assume "terraformscripts" is the folder where the script was saved. Note that
