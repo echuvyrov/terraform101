@@ -54,6 +54,7 @@ In the above, we assume "terraformscripts" is the folder where the script was sa
 
 You should see something like the following screen after you execute the command above
 
-![Image of Terraform Plan](https://github.com/echuvyrov/terraform101/blob/master/tf_plan.png)
+![Image of Terraform Plan](https://github.com/echuvyrov/terraform101/blob/master/tf_plan.png) 
+
 
 
