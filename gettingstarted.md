@@ -48,6 +48,6 @@ In the "provider" section of the script, you tell Terraform to use an Azure prov
 With the script saved, exit to the console/command line and type
 
 ```
-terraform.exe plan terraformscripts
+terraform plan terraformscripts
 ```
-In the above, we assume "terraformscripts" is the folder where the script was saved. Note that
+In the above, we assume "terraformscripts" is the folder where the script was saved.
