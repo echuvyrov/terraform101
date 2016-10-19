@@ -50,4 +50,10 @@ With the script saved, exit to the console/command line and type
 ```
 terraform plan terraformscripts
 ```
-In the above, we assume "terraformscripts" is the folder where the script was saved.
+In the above, we assume "terraformscripts" is the folder where the script was saved. Note that we used the "plan" Terraform command, which looks at the resources defined in the scripts, compares it to the state information saved by Terraform and then outputs planned execution _without_ creating resources in Azure. 
+
+You should see something like the following screen after you execute the command above
+
+![Image of Terraform Plan](https://github.com/echuvyrov/terraform101/blob/master/tf_plan.png)
+
+
