@@ -62,12 +62,14 @@ terraform apply terraformscripts
 If you look in the Azure portal now, you should see the new empty resource group called "terraformtest." In the section below, you will add a Virtual Machine and all the supporting infrastructure to it.
 
 ##Provisioning Ubuntu VM with Terraform
-Let's extend Terraform script we've created above with details necessary to provision a Virtual Machine running Ubuntu. The list of resources that you will provision in the sections below are: network with a single subnet, a network interface card, a storage account with storage container, a public IP and a virtual machine utilizing all the resources above. For a thorough documentation of each of the Azure Terraform resources, consult [Terraform documentation](https://www.terraform.io/docs/providers/azurerm/index.html). 
+Let's extend Terraform script we've created above with details necessary to provision a Virtual Machine running Ubuntu. The list of resources that you will provision in the sections below are: network with a single subnet, a network interface card, a storage account with storage container, a public IP and a virtual machine utilizing all the resources above. For a thorough documentation of each of the Azure Terraform resources, consult [Terraform documentation](https://www.terraform.io/docs/providers/azurerm/index.html).
+
+The full version of the [provisioning script](https://github.com/echuvyrov/terraform101/blob/master/terraform101.tf) is also provided for convenience.
 
 ###Extending the Terraform Script
 Extend the script created above with the following resources. 
 ~~~~
-# create virtual network
+# create a virtual network
 resource "azurerm_virtual_network" "helloterraformnetwork" {
     name = "acctvn"
     address_space = ["10.0.0.0/16"]
