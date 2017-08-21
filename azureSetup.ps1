@@ -1,4 +1,5 @@
 Param(
+  [ValidateSet('','Requirements','Setup')]
   [string]$runOption
 )
 
@@ -12,50 +13,50 @@ $location=""
 $azure_object_id=""
 
 function ShowHelp() {
-	echo "azure-setup"
-	echo ""
-	echo "  azure-setup helps you generate Terraform credentials for Azure"
-	echo ""
-	echo "  The script application"
-	echo "  (client), service principal, and permissions and displays a snippet"
-	echo "  for use in your Terraform templates."
-	echo ""
-	echo "  For simplicity we make a lot of assumptions and choose reasonable"
-	echo "  defaults. If you want more control over what happens, please use"
-	echo "  the Azure Powershell directly."
-	echo ""
-	echo "  Note that you must already have an Azure account, username,"
-	echo "  password, and subscription. You can create those here:"
-	echo ""
-	echo "  - https://account.windowsazure.com/"
-	echo ""
-	echo "REQUIREMENTS"
-	echo ""
-	echo "  - Azure PowerShell"
-	echo "  - jq"
-	echo ""
-	echo "  Use the requirements command (below) for more info."
-	echo ""
-	echo "USAGE"
-	echo ""
-	echo "  ./azure-setup.ps1 requirements"
-	echo "  ./azure-setup.ps1 setup"
-	echo ""
+	Write-Host "azure-setup"
+	Write-Host ""
+	Write-Host "  azure-setup helps you generate Terraform credentials for Azure"
+	Write-Host ""
+	Write-Host "  The script application"
+	Write-Host "  (client), service principal, and permissions and displays a snippet"
+	Write-Host "  for use in your Terraform templates."
+	Write-Host ""
+	Write-Host "  For simplicity we make a lot of assumptions and choose reasonable"
+	Write-Host "  defaults. If you want more control over what happens, please use"
+	Write-Host "  the Azure Powershell directly."
+	Write-Host ""
+	Write-Host "  Note that you must already have an Azure account, username,"
+	Write-Host "  password, and subscription. You can create those here:"
+	Write-Host ""
+	Write-Host "  - https://account.windowsazure.com/"
+	Write-Host ""
+	Write-Host "REQUIREMENTS"
+	Write-Host ""
+	Write-Host "  - Azure PowerShell"
+	Write-Host "  - jq"
+	Write-Host ""
+	Write-Host "  Use the requirements command (below) for more info."
+	Write-Host ""
+	Write-Host "USAGE"
+	Write-Host ""
+	Write-Host "  .\azure-setup.ps1 requirements"
+	Write-Host "  .\azure-setup.ps1 setup"
+	Write-Host ""
 }
 
 function Requirements() {
 	$found=0
 
-	$azureversion = (Get-Module -ListAvailable -Name Azure -Refresh)
+	$azureversion = (Get-Module -ListAvailable -Name AzureRM -Refresh)
 	If ($azureversion.Version.Major -gt 0) 
 	{
 		$found=$found + 1
-		echo "Found Azure PowerShell version: $($azureversion.Version.Major).$($azureversion.Version.Minor)"
+		Write-Host "Found Azure PowerShell version: $($azureversion.Version.Major).$($azureversion.Version.Minor)"
 	}
 	Else
 	{
-		echo "Azure PowerShell is missing. Please download and install Azure PowerShell from"
-		echo "http://aka.ms/webpi-azps"		
+		Write-Host "Azure PowerShell is missing. Please download and install Azure PowerShell from"
+		Write-Host "http://aka.ms/webpi-azps"		
 	}
 
 	return $found
@@ -63,7 +64,7 @@ function Requirements() {
 
 function AskSubscription() {
 	$azuresubscription = Add-AzureRmAccount
-	$script:azure_subscription_id = $azuresubscription.Context.Subscription.SubscriptionId
+	$script:azure_subscription_id = $azuresubscription.Context.Subscription.Id
 	$script:azure_tenant_id = $azuresubscription.Context.Subscription.TenantId		
 }
 
@@ -77,31 +78,31 @@ Function RandomComplexPassword ()
 }
 
 function AskName() {
-	echo ""
-	echo "Choose a name for your client."
-	echo "This is mandatory - do not leave blank."
-	echo "ALPHANUMERIC ONLY. Ex: mytfdeployment."
-	echo -n "> "
+	Write-Host ""
+	Write-Host "Choose a name for your client."
+	Write-Host "This is mandatory - do not leave blank."
+	Write-Host "ALPHANUMERIC ONLY. Ex: mytfdeployment."
+	Write-Host  "> " -NoNewline
 	$script:meta_name = Read-Host
 }
 
 function AskSecret() {
-	echo ""
-	echo "Enter a secret for your application. We recommend generating one with"
-	echo "openssl rand -base64 24. If you leave this blank we will attempt to"
-	echo "generate one for you using .Net Security Framework. THIS WILL BE SHOWN IN PLAINTEXT."
-	echo "Ex: myterraformsecret8734"
-	echo -n "> "
+	Write-Host ""
+	Write-Host "Enter a secret for your application. We recommend generating one with"
+	Write-Host "openssl rand -base64 24. If you leave this blank we will attempt to"
+	Write-Host "generate one for you using .Net Security Framework. THIS WILL BE SHOWN IN PLAINTEXT."
+	Write-Host "Ex: myterraformsecret8734"
+	Write-Host "> " -NoNewline
 	$script:azure_client_secret = Read-Host
 	if ($script:azure_client_secret -eq "")
 	{
 		$script:azure_client_secret = RandomComplexPassword(43)
 	}	
-	echo "Client_secret: $script:azure_client_secret"
+	Write-Host "Client_secret: $script:azure_client_secret"
 }
 
 function CreateServicePrinciple() {
-	echo "==> Creating service principal"
+	Write-Host "==> Creating service principal"
 	$app = New-AzureRmADApplication -DisplayName $meta_name -HomePage "https://$script:meta_name" -IdentifierUris "https://$script:meta_name" -Password $script:azure_client_secret
  	New-AzureRmADServicePrincipal -ApplicationId $app.ApplicationId
 	
@@ -114,22 +115,22 @@ function CreateServicePrinciple() {
 
 	if ($error.Count > 0)
 	{
-		echo "Error creating service principal: $azure_client_id"
+		Write-Host "Error creating service principal: $azure_client_id"
 		exit
 	}
 }
 
 function ShowConfigs() {
-	echo ""
-	echo "Use the following configuration for your Terraform scripts:"
-	echo ""
-	echo "{"
-	echo "      'client_id': $azure_client_id,"
-	echo "      'client_secret': $azure_client_secret,"
-	echo "      'subscription_id': $azure_subscription_id,"
-	echo "      'tenant_id': $azure_tenant_id"
-	echo "}"
-	echo ""
+	Write-Host ""
+	Write-Host "Use the following configuration for your Terraform scripts:"
+	Write-Host ""
+	Write-Host "{"
+	Write-Host "      'client_id': $azure_client_id,"
+	Write-Host "      'client_secret': $azure_client_secret,"
+	Write-Host "      'subscription_id': $azure_subscription_id,"
+	Write-Host "      'tenant_id': $azure_tenant_id"
+	Write-Host "}"
+	Write-Host ""
 }
 
 function Setup() {
