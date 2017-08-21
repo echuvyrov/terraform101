@@ -47,7 +47,7 @@ function ShowHelp() {
 function Requirements() {
 	$found=0
 
-	$azureversion = (Get-Module -ListAvailable -Name Azure -Refresh)
+	$azureversion = (Get-Module -ListAvailable -Name AzureRM -Refresh)
 	If ($azureversion.Version.Major -gt 0) 
 	{
 		$found=$found + 1
