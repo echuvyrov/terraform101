@@ -92,7 +92,7 @@ function AskSecret() {
 	echo "generate one for you using .Net Security Framework. THIS WILL BE SHOWN IN PLAINTEXT."
 	echo "Ex: myterraformsecret8734"
 	echo -n "> "
-	$script:azure_client_secret = Read-Host
+	$script:azure_client_secret = Read-Host -AsSecureString
 	if ($script:azure_client_secret -eq "")
 	{
 		$script:azure_client_secret = RandomComplexPassword(43)
